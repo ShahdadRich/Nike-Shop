@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nike/data/repo/auth_repository.dart';
 import 'package:nike/theme.dart';
 import 'package:nike/ui/auth/auth.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  authRepository.loadAuthInfo();
   runApp(const MyApp());
 }
 
