@@ -4,6 +4,7 @@ import 'package:nike/data/auth_info.dart';
 import 'package:nike/data/source/auth_data_source.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// safeheye vorod be app
 final authRepository = AuthRepository(AuthRemoteDataSource(httpClient));
 
 abstract class IAuthRepository {
@@ -34,8 +35,11 @@ class AuthRepository implements IAuthRepository {
 
   @override
   Future<void> refreshToken() async {
-    final AuthInfo authInfo = await dataSource.refreshToken(token);
-    _persistAuthTokens(authInfo);
+    if (authChangeNotifier.value != null) {
+      final AuthInfo authInfo =
+          await dataSource.refreshToken(authChangeNotifier.value!.refreshToken);
+      _persistAuthTokens(authInfo);
+    }
   }
 
   Future<void> _persistAuthTokens(AuthInfo authInfo) async {

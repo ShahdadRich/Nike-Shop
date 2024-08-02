@@ -18,7 +18,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthSuccess(isLoginMode));
         } else {
           await authRepository.singUp(event.username, event.password);
+          emit(AuthSuccess(isLoginMode));
         }
+      } else if (event is AuthModeChangeIsClicked) {
+        isLoginMode = !isLoginMode;
+        emit(AuthInitial(isLoginMode));
       }
     });
   }
