@@ -1,3 +1,5 @@
+import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,12 +42,25 @@ class _AuthScreenState extends State<AuthScreen> {
         body: BlocProvider<AuthBloc>(
           create: (context) {
             final bloc = AuthBloc(authRepository);
+            bloc.stream.forEach((state) {
+              if (state is AuthSuccess) {
+                Navigator.of(context).pop();
+              } else if (state is AuthError) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(const SnackBar(content: Text('خطا')));
+              }
+            });
             bloc.add(AuthStarted());
             return bloc;
           },
           child: Padding(
             padding: const EdgeInsets.only(left: 48, right: 48),
             child: BlocBuilder<AuthBloc, AuthState>(
+              buildWhen: (previous, current) {
+                return current is AuthLoading ||
+                    current is AuthInitial ||
+                    current is AuthInitial;
+              },
               builder: (context, state) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -87,7 +102,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       onPressed: () {
                         authRepository.login("test@gmail.com", "123456");
                       },
-                      child: Text(state.isLoginMode ? 'ورود' : 'ثبت نام'),
+                      child: state is AuthLoading
+                          ? const CircularProgressIndicator()
+                          : Text(state.isLoginMode ? 'ورود' : 'ثبت نام'),
                     ),
                     const SizedBox(
                       height: 24,
