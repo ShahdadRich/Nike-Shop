@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:nike/ui/cart/cart.dart';
 import 'package:nike/ui/home/home.dart';
 
 // in ye navigatore khafane(:(:
@@ -52,12 +54,7 @@ class _RootScreenState extends State<RootScreen> {
           index: selectScreenIndex,
           children: [
             _navigator(_homekey, homeIndex, const HomeScreen()),
-            _navigator(
-                _cartkey,
-                cartIndex,
-                const Center(
-                  child: Text('sabad kharid'),
-                )),
+            _navigator(_cartkey, cartIndex, CartScreen()),
             _navigator(
                 _profilekey,
                 profileIndex,

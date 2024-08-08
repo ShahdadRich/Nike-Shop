@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:nike/common/http_client.dart';
 import 'package:nike/data/auth_info.dart';
 import 'package:nike/data/source/auth_data_source.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // safeheye vorod be app
 final authRepository = AuthRepository(AuthRemoteDataSource(httpClient));
@@ -11,6 +10,7 @@ abstract class IAuthRepository {
   Future<void> login(String username, String password);
   Future<void> singUp(String username, String password);
   Future<void> refreshToken();
+  Future<void> singOut();
 }
 
 class AuthRepository implements IAuthRepository {
@@ -24,13 +24,13 @@ class AuthRepository implements IAuthRepository {
   @override
   Future<void> login(String username, String password) async {
     final AuthInfo authInfo = await dataSource.login(username, password);
-    _persistAuthTokens(authInfo);
+    // _persistAuthTokens(authInfo);
   }
 
   @override
   Future<void> singUp(String username, String password) async {
     final AuthInfo authInfo = await dataSource.singUp(username, password);
-    _persistAuthTokens(authInfo);
+    // _persistAuthTokens(authInfo);
   }
 
   @override
@@ -38,27 +38,33 @@ class AuthRepository implements IAuthRepository {
     if (authChangeNotifier.value != null) {
       final AuthInfo authInfo =
           await dataSource.refreshToken(authChangeNotifier.value!.refreshToken);
-      _persistAuthTokens(authInfo);
+      // _persistAuthTokens(authInfo);
     }
   }
 
-  Future<void> _persistAuthTokens(AuthInfo authInfo) async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    sharedPreferences.setString("access_token", authInfo.accessToken);
-    sharedPreferences.setString("refresh_token", authInfo.refreshToken);
+  @override
+  Future<void> singOut() {
+    // TODO: implement singOut
+    throw UnimplementedError();
   }
 
-  Future<void> loadAuthInfo() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    final String accessToken =
-        sharedPreferences.getString("access_token") ?? "";
+  // Future<void> _persistAuthTokens(AuthInfo authInfo) async {
+  //   final SharedPreferences sharedPreferences =
+  //       await SharedPreferences.getInstance();
+  //   sharedPreferences.setString("access_token", authInfo.accessToken);
+  //   sharedPreferences.setString("refresh_token", authInfo.refreshToken);
+  // }
 
-    final String refreshToken =
-        sharedPreferences.getString("refresh_token") ?? "";
-    if (accessToken.isNotEmpty && refreshToken.isNotEmpty) {
-      authChangeNotifier.value = AuthInfo(accessToken, refreshToken);
-    }
-  }
+  // Future<void> loadAuthInfo() async {
+  //   final SharedPreferences sharedPreferences =
+  //       await SharedPreferences.getInstance();
+  //   final String accessToken =
+  //       sharedPreferences.getString("access_token") ?? "";
+
+  //   final String refreshToken =
+  //       sharedPreferences.getString("refresh_token") ?? "";
+  //   if (accessToken.isNotEmpty && refreshToken.isNotEmpty) {
+  //     authChangeNotifier.value = AuthInfo(accessToken, refreshToken);
+  //   }
+  // }
 }
