@@ -7,6 +7,6 @@ class CartResponse {
 
   CartResponse.fromJson(Map<String, dynamic> json)
       : productId = json['product_id'],
-        cartItemId = json['cart_item_id'],
+        cartItemId = json['id'],
         count = json['count'];
 }

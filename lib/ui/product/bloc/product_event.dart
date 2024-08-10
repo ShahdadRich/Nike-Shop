@@ -6,3 +6,9 @@ sealed class ProductEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class CartAddButtonClick extends ProductEvent {
+  final int productId;
+
+  const CartAddButtonClick(this.productId);
+}
