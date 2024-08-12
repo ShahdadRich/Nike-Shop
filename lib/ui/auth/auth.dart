@@ -12,6 +12,10 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  final TextEditingController usernameController =
+      TextEditingController(text: 'test@gmail.com');
+  final TextEditingController passwordController =
+      TextEditingController(text: '123456');
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
@@ -59,7 +63,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 buildWhen: (previous, current) {
                   return current is AuthLoading ||
                       current is AuthInitial ||
-                      current is AuthInitial;
+                      current is AuthError;
                 },
                 builder: (context, state) {
                   return Column(
@@ -88,20 +92,27 @@ class _AuthScreenState extends State<AuthScreen> {
                       const SizedBox(
                         height: 24,
                       ),
-                      const TextField(
+                      TextField(
+                        controller: usernameController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(label: Text('آدرس ایمل')),
+                        decoration:
+                            const InputDecoration(label: Text('آدرس ایمل')),
                       ),
                       const SizedBox(
                         height: 16,
                       ),
-                      const _PassWordTextField(onBackground: onBackground),
+                      _PassWordTextField(
+                        onBackground: onBackground,
+                        controller: passwordController,
+                      ),
                       const SizedBox(
                         height: 16,
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          authRepository.login("test@gmail.com", "123456");
+                          BlocProvider.of<AuthBloc>(context).add(
+                              AuthButtonIsClicked(usernameController.text,
+                                  passwordController.text));
                         },
                         child: state is AuthLoading
                             ? const CircularProgressIndicator()
@@ -153,9 +164,11 @@ class _PassWordTextField extends StatefulWidget {
   const _PassWordTextField({
     super.key,
     required this.onBackground,
+    required this.controller,
   });
 
   final Color onBackground;
+  final TextEditingController controller;
 
   @override
   State<_PassWordTextField> createState() => _PassWordTextFieldState();
@@ -166,6 +179,7 @@ class _PassWordTextFieldState extends State<_PassWordTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.controller,
       keyboardType: TextInputType.visiblePassword,
       obscureText: obscureText,
       decoration: InputDecoration(

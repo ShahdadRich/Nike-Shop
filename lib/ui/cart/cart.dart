@@ -25,17 +25,20 @@ class CartScreen extends StatelessWidget {
                 Text(isAuthenticated
                     ? 'خوش آمدید '
                     : 'لطفا وارد حساب کاربری خود شوید'),
-                if (!isAuthenticated)
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).push(
-                        MaterialPageRoute(
-                          builder: (context) => const AuthScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text('ورود'),
-                  ),
+                isAuthenticated
+                    ? ElevatedButton(
+                        onPressed: () {
+                          authRepository.singOut();
+                        },
+                        child: const Text('خروج از حساب'),
+                      )
+                    : ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const AuthScreen()));
+                        },
+                        child: const Text('ورود'))
               ],
             ),
           );
