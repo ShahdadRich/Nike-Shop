@@ -1,12 +1,16 @@
-class CartResponse {
-  final int productId;
-  final int cartItemId;
-  final int count;
+import 'package:nike/data/cart_item.dart';
 
-  CartResponse(this.productId, this.cartItemId, this.count);
+class CartResponse {
+  final List<CartItemEntity> cartItems;
+  final int payableprice;
+  final int totalPrice;
+  final int shippingCost;
 
   CartResponse.fromJson(Map<String, dynamic> json)
-      : productId = json['product_id'],
-        cartItemId = json['id'],
-        count = json['count'];
+      : cartItems = CartItemEntity.pasreJsonArray(
+          json['cart_items'],
+        ),
+        payableprice = json['payable_price'],
+        totalPrice = json['total_price'],
+        shippingCost = json['shipping_cost'];
 }
